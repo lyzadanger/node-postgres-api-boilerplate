@@ -12,7 +12,10 @@ export const routes = {
   },
   get: {
     '/': controller.read,
-    '/:id': controller.read
+    '/:id': [
+      controller.valid(validations.readOne),
+      controller.read
+    ]
   },
   patch: {
     '/:id': [

@@ -55,16 +55,11 @@ describe (`Endpoint ${location}`, () => {
       it ('should handle invalid request', () => {
         return request(app)
           .get(`${location}/futz`)
-          .expect(500) // TODO review later
+          .expect(400)
           .then(res => {
-            expect(res).to.contain.key('error');
             expect(res.body).to.contain.key('errors');
-            expect(res.body.errors).to.be.an('Array')
-              .and.to.have.length(1);
-            expect(res.body.errors[0]).to.be.an('object')
-              .and.to.contain.keys('code', 'message');
-            expect(res.serverError).to.be.true;
-            expect(res.clientError).to.be.false;
+            expect(res.serverError).to.be.false;
+            expect(res.clientError).to.be.true;
           });
       });
       it ('should handle request for non-existent resource', () => {
@@ -98,10 +93,23 @@ describe (`Endpoint ${location}`, () => {
         return request(app)
           .post(location)
           .send({})
-          .expect(409);
+          .expect(400);
       });
       it ('should handle request with uniqueness constraint violation');
-      it ('should handle request with bad schema');
+      it ('should handle request with bad schema', () => {
+        return request(app)
+          .post(location)
+          .send({
+            data: {
+              name: 4,
+              abbr: 'DN'
+            }
+          })
+          .expect(400)
+          .then(res => {
+            expect(res.body).to.contain.key('errors');
+          });
+      });
     });
   });
 
