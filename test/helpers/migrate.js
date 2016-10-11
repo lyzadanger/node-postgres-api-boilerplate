@@ -32,9 +32,8 @@ export const up = execute.bind(null, '-A -e');
  * Take DB back, migrate down
  * -R revert migrations (down)
  * (TODO: -e and -a in the same command?)
- * TODO: How to derive ID of first migration?
  */
 export const reset = function () {
-  execute('-R -a -e --to=20150823131441');
+  execute('-R -a -e -n 10000');
   execute('-A -e');
 };
